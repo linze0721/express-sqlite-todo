@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Todo List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: [
+              'system-ui',
+              '-apple-system',
+              'BlinkMacSystemFont',
+              '"Segoe UI"',
+              'Roboto',
+              '"Helvetica Neue"',
+              'Arial',
+              'sans-serif',
+            ],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased">
+  <main class="mx-auto w-full max-w-[600px] px-4 py-10 sm:py-14">
+    <header class="mb-8 text-center sm:text-left">
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+        Simple Todo List
+      </h1>
+      <p class="mt-1 text-sm text-slate-500">
+        Stay on top of what matters today.
+      </p>
+    </header>
+
+    <section class="rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/50">
+      <form
+        id="add-form"
+        class="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:gap-2 sm:p-5"
+        aria-label="Add a new todo"
+      >
+        <label for="new-todo" class="sr-only">New todo</label>
+        <input
+          id="new-todo"
+          name="title"
+          type="text"
+          placeholder="What do you need to do?"
+          class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
+        />
+        <button
+          type="submit"
+          class="shrink-0 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-indigo-700"
+        >
+          Add
+        </button>
+      </form>
+
+      <ul id="todo-list" class="divide-y divide-slate-100" role="list" aria-label="Todos"></ul>
+
+      <footer id="todo-footer" class="px-4 py-3 text-center text-xs text-slate-400 sm:px-5 sm:text-left hidden"></footer>
+    </section>
+  </main>
+
+  <script>
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function renderTodos(todos) {
+      const list = document.getElementById('todo-list');
+      const footer = document.getElementById('todo-footer');
+      list.innerHTML = '';
+
+      if (todos.length === 0) {
+        footer.classList.add('hidden');
+        return;
+      }
+
+      const completed = todos.filter((t) => t.done).length;
+      footer.textContent = `${todos.length} item${todos.length === 1 ? '' : 's'} · ${completed} completed`;
+      footer.classList.remove('hidden');
+
+      for (const todo of todos) {
+        const li = document.createElement('li');
+        li.className = 'group flex items-center gap-3 px-4 py-3.5 sm:px-5';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = todo.done;
+        checkbox.className =
+          'h-5 w-5 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500';
+        checkbox.setAttribute('aria-label', 'Mark complete');
+        checkbox.addEventListener('change', async () => {
+          const res = await fetch(`/api/todos/${todo.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ done: checkbox.checked }),
+          });
+          if (!res.ok) {
+            const data = await res.json().catch(() => ({}));
+            alert(data.error || 'Failed to update todo');
+            checkbox.checked = !checkbox.checked;
+            return;
+          }
+          location.reload();
+        });
+
+        const span = document.createElement('span');
+        span.className = todo.done
+          ? 'min-w-0 flex-1 text-base text-slate-400 line-through decoration-slate-300'
+          : 'min-w-0 flex-1 text-base text-slate-800';
+        span.textContent = todo.title;
+
+        const delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className =
+          'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40';
+        delBtn.setAttribute('aria-label', `Delete ${todo.title}`);
+        delBtn.innerHTML =
+          '<span class="text-lg leading-none font-light" aria-hidden="true">×</span>';
+        delBtn.addEventListener('click', async () => {
+          const res = await fetch(`/api/todos/${todo.id}`, { method: 'DELETE' });
+          if (!res.ok && res.status !== 204) {
+            const data = await res.json().catch(() => ({}));
+            alert(data.error || 'Failed to delete todo');
+            return;
+          }
+          location.reload();
+        });
+
+        li.appendChild(checkbox);
+        li.appendChild(span);
+        li.appendChild(delBtn);
+        list.appendChild(li);
+      }
+    }
+
+    async function loadTodos() {
+      const res = await fetch('/api/todos');
+      if (!res.ok) {
+        console.error('Failed to load todos');
+        return;
+      }
+      const todos = await res.json();
+      renderTodos(todos);
+    }
+
+    document.getElementById('add-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = document.getElementById('new-todo');
+      const title = input.value.trim();
+      if (!title) {
+        alert('Please enter a todo title');
+        return;
+      }
+      const res = await fetch('/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data.error || 'Failed to add todo');
+        return;
+      }
+      location.reload();
+    });
+
+    loadTodos();
+  </script>
+</body>
+</html>
