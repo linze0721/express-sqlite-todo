@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Todo List</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: [
+              'system-ui',
+              '-apple-system',
+              'BlinkMacSystemFont',
+              '"Segoe UI"',
+              'Roboto',
+              '"Helvetica Neue"',
+              'Arial',
+              'sans-serif',
+            ],
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased">
+  <main class="mx-auto w-full max-w-[600px] px-4 py-10 sm:py-14">
+    <header class="mb-8 text-center sm:text-left">
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+        Simple Todo List
+      </h1>
+      <p class="mt-1 text-sm text-slate-500">
+        Stay on top of what matters today.
+      </p>
+    </header>
+
+    <section class="rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/50">
+      <form
+        class="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:gap-2 sm:p-5"
+        action="#"
+        method="get"
+        aria-label="Add a new todo"
+      >
+        <label for="new-todo" class="sr-only">New todo</label>
+        <input
+          id="new-todo"
+          name="title"
+          type="text"
+          placeholder="What do you need to do?"
+          class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50/80 px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
+        />
+        <button
+          type="submit"
+          class="shrink-0 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-indigo-700"
+        >
+          Add
+        </button>
+      </form>
+
+      <ul class="divide-y divide-slate-100" role="list" aria-label="Todos">
+        <li class="group flex items-center gap-3 px-4 py-3.5 sm:px-5">
+          <input
+            type="checkbox"
+            checked
+            class="h-5 w-5 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            aria-label="Mark complete"
+          />
+          <span class="min-w-0 flex-1 text-base text-slate-400 line-through decoration-slate-300">
+            Buy groceries
+          </span>
+          <button
+            type="button"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+            aria-label="Delete Buy groceries"
+          >
+            <span class="text-lg leading-none font-light" aria-hidden="true">×</span>
+          </button>
+        </li>
+
+        <li class="group flex items-center gap-3 px-4 py-3.5 sm:px-5">
+          <input
+            type="checkbox"
+            class="h-5 w-5 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            aria-label="Mark complete"
+          />
+          <span class="min-w-0 flex-1 text-base text-slate-800">
+            Reply to team standup notes
+          </span>
+          <button
+            type="button"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+            aria-label="Delete Reply to team standup notes"
+          >
+            <span class="text-lg leading-none font-light" aria-hidden="true">×</span>
+          </button>
+        </li>
+
+        <li class="group flex items-center gap-3 px-4 py-3.5 sm:px-5">
+          <input
+            type="checkbox"
+            checked
+            class="h-5 w-5 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            aria-label="Mark complete"
+          />
+          <span class="min-w-0 flex-1 text-base text-slate-400 line-through decoration-slate-300">
+            Water the plants
+          </span>
+          <button
+            type="button"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+            aria-label="Delete Water the plants"
+          >
+            <span class="text-lg leading-none font-light" aria-hidden="true">×</span>
+          </button>
+        </li>
+
+        <li class="group flex items-center gap-3 px-4 py-3.5 sm:px-5">
+          <input
+            type="checkbox"
+            class="h-5 w-5 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            aria-label="Mark complete"
+          />
+          <span class="min-w-0 flex-1 text-base text-slate-800">
+            Draft project README
+          </span>
+          <button
+            type="button"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+            aria-label="Delete Draft project README"
+          >
+            <span class="text-lg leading-none font-light" aria-hidden="true">×</span>
+          </button>
+        </li>
+
+        <li class="group flex items-center gap-3 px-4 py-3.5 sm:px-5">
+          <input
+            type="checkbox"
+            class="h-5 w-5 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            aria-label="Mark complete"
+          />
+          <span class="min-w-0 flex-1 text-base text-slate-800">
+            Schedule dentist appointment
+          </span>
+          <button
+            type="button"
+            class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-400/40"
+            aria-label="Delete Schedule dentist appointment"
+          >
+            <span class="text-lg leading-none font-light" aria-hidden="true">×</span>
+          </button>
+        </li>
+      </ul>
+
+      <footer class="px-4 py-3 text-center text-xs text-slate-400 sm:px-5 sm:text-left">
+        5 items · 2 completed
+      </footer>
+    </section>
+  </main>
+</body>
+</html>
