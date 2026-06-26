@@ -5,17 +5,6 @@ const path = require('path');
 const express = require('express');
 const Database = require('better-sqlite3');
 
-function dbPathFromUrl(databaseUrl) {
-  const url = databaseUrl || 'sqlite:///data/app.db';
-  if (url.startsWith('sqlite:///')) {
-    return url.slice('sqlite:///'.length);
-  }
-  if (url.startsWith('sqlite://')) {
-    return url.slice('sqlite://'.length);
-  }
-  return url;
-}
-
 function rowToJson(row) {
   return {
     id: row.id,
@@ -25,8 +14,8 @@ function rowToJson(row) {
   };
 }
 
-const dbFile = dbPathFromUrl(process.env.DATABASE_URL);
-fs.mkdirSync(path.dirname(path.resolve(dbFile)), { recursive: true });
+const dbFile = path.join(process.env.DATA_DIR || '/data', 'app.db');
+fs.mkdirSync(path.dirname(dbFile), { recursive: true });
 
 const db = new Database(dbFile);
 db.exec(`
