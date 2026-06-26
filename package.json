@@ -1,0 +1,22 @@
+{
+  "name": "todo-with-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simple Todo List (Express + SQLite + Vanilla HTML)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "express": "^4.21.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3"
+    ]
+  }
+}
