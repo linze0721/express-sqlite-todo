@@ -27,15 +27,15 @@ Open [http://localhost:8080](http://localhost:8080) (or the port you set).
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | `8080` | HTTP listen port (binds `0.0.0.0`) |
-| `DATABASE_URL` | `sqlite:///data/app.db` | SQLite file path (`sqlite:///` prefix stripped) |
+| `DATA_DIR` | `/data` | Directory for the SQLite database file (`app.db`) |
 
 Example:
 
 ```bash
-PORT=8080 DATABASE_URL=sqlite:///data/app.db pnpm start
+PORT=8080 DATA_DIR=/data pnpm start
 ```
 
-The `data/` directory is created automatically. SQLite files under `data/` are gitignored.
+`DATA_DIR` is created automatically if missing. In containers, use a writable volume mount at `/data` (or set `DATA_DIR` accordingly).
 
 ## API
 
@@ -50,6 +50,6 @@ The `data/` directory is created automatically. SQLite files under `data/` are g
 package.json
 server.js
 public/index.html
-data/              # SQLite (gitignored)
+# SQLite lives at $DATA_DIR/app.db (default /data/app.db)
 design/            # UI mockups
 ```
